@@ -491,7 +491,7 @@ async def shop(interaction: discord.Interaction, 역할:discord.Role, 포인트:
         temp.append(f" {role.name} ({pt})")
 
         if i % 2 == 0:
-            lines.append("      |      ".join(temp))
+            lines.append("　|　".join(temp))
             temp = []
 
     if temp:
