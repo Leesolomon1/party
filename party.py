@@ -117,32 +117,49 @@ async def set_attendance(interaction: discord.Interaction):
 @bot.event
 async def on_voice_state_update(member,before,after):
     voice = load("voice")
+    
+# ---------------------------
+# 생성채널 들어감
+# ---------------------------
+    if after.channel:
+        cid = str(after.channel.id)
 
-    # 생성채널 들어감
-    if after.channel and str(after.channel.id) in voice:
-        if voice[str(after.channel.id)] != "generator":
-         return
-        category = after.channel.category
-        new_vc = await member.guild.create_voice_channel("방이름을 변경해주세요.",category=category)
+        if cid in voice and voice[cid] == "generator":
+            category = after.channel.category
 
-        voice[str(new_vc.id)] = member.id
-        save("voice",voice)
+            new_vc = await member.guild.create_voice_channel(
+                "방이름을 변경해주세요.",
+                category=category
+        )
 
-        await member.move_to(new_vc)
+            voice[str(new_vc.id)] = member.id
+            save("voice", voice)
 
-    # 방 비었을 때 삭제
-    if before.channel and str(before.channel.id) in voice:
-        # 🔥 생성채널은 삭제 금지
-     if voice[str(before.channel.id)] == "generator":
-        return
+            await member.move_to(new_vc)
 
-     if len(before.channel.members)==0:
-        try:
-            del voice[str(before.channel.id)]
-            save("voice",voice)
-            await before.channel.delete()
-        except:
-            pass
+# ---------------------------
+# 방 비었을 때 삭제
+# ---------------------------
+    if before.channel:
+        cid = str(before.channel.id)
+
+        if cid in voice:
+        # 생성채널은 삭제 금지
+            if voice[cid] == "generator":
+                return
+
+        await asyncio.sleep(1)
+
+        # 🔥 여기 핵심: None 체크 + 다시 확인
+        if before.channel and len(before.channel.members) == 0:
+            try:
+                del voice[cid]
+                save("voice", voice)
+                await before.channel.delete()
+            except:
+                pass  
+
+
 
 # 방 이름 변경 제한
 @bot.event
