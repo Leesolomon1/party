@@ -488,7 +488,7 @@ async def shop(interaction: discord.Interaction, 역할:discord.Role, 포인트:
 
     for i, (rid, pt) in enumerate(data[gid]["roles"].items(), 1):
         role = interaction.guild.get_role(int(rid))
-        temp.append(f"🎭 {role.name} ({pt})")
+        temp.append(f" {role.name} ({pt})")
 
         if i % 2 == 0:
             lines.append("   ".join(temp))
