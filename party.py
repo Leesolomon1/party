@@ -134,7 +134,10 @@ async def on_voice_state_update(member,before,after):
             # 🔥 생성자에게만 방 이름 변경 권한 부여
             await new_vc.set_permissions(member, manage_channels=True)
 
-            voice[str(new_vc.id)] = member.id
+            voice[str(new_vc.id)] = {
+                "owner": member.id,
+                "name": "방이름을 변경해주세요."
+            }
             save("voice", voice)
 
             await member.move_to(new_vc)
